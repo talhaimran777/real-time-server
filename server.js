@@ -19,8 +19,6 @@ io.on("connection", (socket) => {
 
 app.get("/", (req, res) => res.send("Simple get request on route /"));
 
-const PORT = 8000;
-
-httpServer.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+httpServer.listen(process.env.PORT, () => {
+  console.log(`Server listening on port ${process.env.PORT}`);
 });
