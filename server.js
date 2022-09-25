@@ -1,27 +1,26 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import { createServer } from "http";
-import { Server } from "socket.io";
+const http = require('http');
+const express = require('express');
+const socketio = require('socket.io');
+const cors = require('cors');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
 const app = express();
-app.use(cors);
+const server = http.createServer(app);
+const io = socketio(server);
 
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.CLIENT_ORIGIN
-  }
-});
+app.use(cors());
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  socket.on("TYPING",  (text) => {
+    console.log("Text comming from client", text);
+    socket.emit("TYPING_BACK", text);
+  });
 });
 
 app.get("/", (req, res) => res.send("Simple get request on route /"));
 
-httpServer.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`Server listening on port ${process.env.PORT}`);
 });
